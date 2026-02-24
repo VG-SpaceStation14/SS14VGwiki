@@ -9,6 +9,280 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        /* Стили для тегов отделов */
+        .dept-tag {
+            display: inline-block;
+            background: rgba(222, 114, 25, 0.15);
+            color: var(--accent-orange);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            text-transform: lowercase;
+            border: 1px solid rgba(222, 114, 25, 0.3);
+            transition: all 0.3s var(--transition-bounce);
+            animation: tagPulse 3s infinite;
+            cursor: default;
+        }
+
+        /* Цветные теги для разных отделов */
+        .dept-tag.command {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--accent-gold);
+            border-color: rgba(212, 175, 55, 0.3);
+            animation: goldTagPulse 3s infinite;
+        }
+
+        .dept-tag.security {
+            background: rgba(192, 57, 43, 0.15);
+            color: #c0392b;
+            border-color: rgba(192, 57, 43, 0.3);
+            animation: redTagPulse 3s infinite;
+        }
+
+        .dept-tag.law {
+            background: rgba(52, 152, 219, 0.15);
+            color: #3498db;
+            border-color: rgba(52, 152, 219, 0.3);
+            animation: blueTagPulse 3s infinite;
+        }
+
+        .dept-tag.science {
+            background: rgba(155, 89, 182, 0.15);
+            color: #9b59b6;
+            border-color: rgba(155, 89, 182, 0.3);
+            animation: purpleTagPulse 3s infinite;
+        }
+
+        .dept-tag.engineering {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+            border-color: rgba(241, 196, 15, 0.3);
+            animation: yellowTagPulse 3s infinite;
+        }
+
+        .dept-tag.medical {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            border-color: rgba(46, 204, 113, 0.3);
+            animation: greenTagPulse 3s infinite;
+        }
+
+        .dept-tag.cargo {
+            background: rgba(230, 126, 34, 0.15);
+            color: #e67e22;
+            border-color: rgba(230, 126, 34, 0.3);
+            animation: orangeTagPulse 3s infinite;
+        }
+
+        .dept-tag.service {
+            background: rgba(26, 188, 156, 0.15);
+            color: #1abc9c;
+            border-color: rgba(26, 188, 156, 0.3);
+            animation: tealTagPulse 3s infinite;
+        }
+
+        /* Анимации для тегов */
+        @keyframes goldTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(212, 175, 55, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(212, 175, 55, 0.4); }
+        }
+
+        @keyframes redTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(192, 57, 43, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(192, 57, 43, 0.4); }
+        }
+
+        @keyframes blueTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(52, 152, 219, 0.4); }
+        }
+
+        @keyframes purpleTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(155, 89, 182, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(155, 89, 182, 0.4); }
+        }
+
+        @keyframes yellowTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(241, 196, 15, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(241, 196, 15, 0.4); }
+        }
+
+        @keyframes greenTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(46, 204, 113, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(46, 204, 113, 0.4); }
+        }
+
+        @keyframes orangeTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(230, 126, 34, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(230, 126, 34, 0.4); }
+        }
+
+        @keyframes tealTagPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 5px rgba(26, 188, 156, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 2px 15px rgba(26, 188, 156, 0.4); }
+        }
+
+        /* Кастомные стили для rule-item на этой странице */
+        .rule-item {
+            border-left-width: 4px;
+            transition: all 0.3s var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rule-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+
+        .rule-item:hover::before {
+            left: 100%;
+        }
+
+        .rule-item:hover {
+            transform: translateX(5px) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .rule-title {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .rule-title i {
+            transition: transform 0.3s var(--transition-bounce);
+            font-size: 1.2rem;
+        }
+
+        .rule-item:hover .rule-title i {
+            transform: scale(1.2) rotate(5deg);
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .rule-title a {
+            transition: all 0.2s ease;
+            font-size: 1.2rem;
+        }
+
+        .rule-title a:hover {
+            text-decoration: underline;
+            text-shadow: 0 0 8px var(--accent-gold);
+        }
+
+        .rule-desc {
+            padding-left: 2rem;
+            transition: color 0.2s ease;
+            line-height: 1.6;
+        }
+
+        .rule-item:hover .rule-desc {
+            color: #e0e8f0;
+        }
+
+        /* Стили для информационного блока */
+        .info-block {
+            background: rgba(222, 114, 25, 0.1);
+            border-left: 4px solid var(--accent-orange);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+            animation: slideInLeft 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(222, 114, 25, 0.1), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+
+        .info-block:hover::before {
+            left: 100%;
+        }
+
+        .info-block i {
+            animation: iconPulse 2s infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--accent-gold)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--accent-gold)); }
+        }
+
+        /* Легенда цветов */
+        .color-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.5s ease forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover .legend-color {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .legend-text {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -43,51 +317,155 @@
             <div class="wiki-article">
                 <p>Стандартные Рабочие Процедуры (Standard Operating Procedures) — это внутренние регламенты и инструкции, обязательные для сотрудников каждого отдела. Соблюдение СРП обеспечивает безопасность, эффективность и порядок на объекте.</p>
                 
-                <div style="background: rgba(222, 114, 25, 0.1); border-left: 4px solid var(--accent-orange); padding: 1rem; margin-bottom: 2rem;">
-                    <p><i class="fas fa-exclamation-triangle" style="color: var(--accent-gold);"></i> <strong>Ведомственные СРП:</strong> Ниже представлен список разделов.</p>
+                <div class="info-block">
+                    <p style="margin: 0;"><i class="fas fa-exclamation-triangle" style="color: var(--accent-gold);"></i> <strong>Ведомственные СРП:</strong> Ниже представлен список разделов. Выберите интересующий вас отдел для получения подробной информации.</p>
                 </div>
 
                 <ul class="rules-list" style="list-style: none; padding-left: 0;">
+                    <!-- СРП Командования -->
                     <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-crown"></i> <a href="sop-command.html" style="color: var(--accent-gold); text-decoration: none;">СРП Командования</a></div>
+                        <div class="rule-title">
+                            <i class="fas fa-crown" style="color: var(--accent-gold);"></i>
+                            <a href="sop-command.html" style="color: var(--accent-gold); text-decoration: none;">СРП Командования</a>
+                            <span class="dept-tag command">командование</span>
+                            <span class="dept-tag">лидерство</span>
+                        </div>
                         <div class="rule-desc">Обязанности Капитана, Главы Персонала, Адъютанта, Офицера "Синий Щит", Представителя NT и Магистрата. Процедуры назначения ИО, отстранения, формирования Совета Глав и работы с ИИ.</div>
                     </li>
-                    <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-shield-alt"></i> <a href="sop-security.html" style="color: var(--accent-gold); text-decoration: none;">СРП Службы Безопасности</a></div>
+
+                    <!-- СРП Службы Безопасности -->
+                    <li class="rule-item" style="border-left-color: #c0392b;">
+                        <div class="rule-title">
+                            <i class="fas fa-shield-alt" style="color: #c0392b;"></i>
+                            <a href="sop-security.html" style="color: #c0392b; text-decoration: none;">СРП Службы Безопасности</a>
+                            <span class="dept-tag security">безопасность</span>
+                            <span class="dept-tag">правопорядок</span>
+                        </div>
                         <div class="rule-desc">Обязанности ГСБ, Смотрителя, Инструктора, Офицеров, Детектива, Бригмедика, Пилота и Кадета. Процедуры ареста, обыска, применения силы, УДО и казни.</div>
                     </li>
-                    <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-scale-balanced"></i> <a href="sop-law.html" style="color: var(--accent-gold); text-decoration: none;">СРП Юриспруденции</a></div>
+
+                    <!-- СРП Юриспруденции -->
+                    <li class="rule-item" style="border-left-color: #3498db;">
+                        <div class="rule-title">
+                            <i class="fas fa-scale-balanced" style="color: #3498db;"></i>
+                            <a href="sop-law.html" style="color: #3498db; text-decoration: none;">СРП Юриспруденции</a>
+                            <span class="dept-tag law">юриспруденция</span>
+                            <span class="dept-tag">право</span>
+                        </div>
                         <div class="rule-desc">Обязанности Магистрата, Агента Внутренних Дел и Юриста. Процедуры рассмотрения жалоб, внутренних проверок, судебных разбирательств и адвокатской защиты.</div>
                     </li>
-                    <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-flask"></i> <a href="sop-science.html" style="color: var(--accent-gold); text-decoration: none;">СРП Исследований и Разработок</a></div>
+
+                    <!-- СРП Исследований и Разработок -->
+                    <li class="rule-item" style="border-left-color: #9b59b6;">
+                        <div class="rule-title">
+                            <i class="fas fa-flask" style="color: #9b59b6;"></i>
+                            <a href="sop-science.html" style="color: #9b59b6; text-decoration: none;">СРП Исследований и Разработок</a>
+                            <span class="dept-tag science">наука</span>
+                            <span class="dept-tag">исследования</span>
+                        </div>
                         <div class="rule-desc">Обязанности Научного руководителя, Старшего научного сотрудника, Научного сотрудника, Робототехника и Лаборанта. Процедуры работы с аномалиями, артефактами, Блюспейс добытчиком и признания разумности существ.</div>
                     </li>
-                    <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-bolt"></i> <a href="sop-engineering.html" style="color: var(--accent-gold); text-decoration: none;">СРП Инженерии</a></div>
+
+                    <!-- СРП Инженерии -->
+                    <li class="rule-item" style="border-left-color: #f1c40f;">
+                        <div class="rule-title">
+                            <i class="fas fa-bolt" style="color: #f1c40f;"></i>
+                            <a href="sop-engineering.html" style="color: #f1c40f; text-decoration: none;">СРП Инженерии</a>
+                            <span class="dept-tag engineering">инженерия</span>
+                            <span class="dept-tag">техника</span>
+                        </div>
                         <div class="rule-desc">Обязанности Старшего Инженера, Атмосферного Техника, Инженера и Технического Ассистента. Приоритеты ремонтных работ, работа с сингулярностью, теслой и аварийные процедуры.</div>
                     </li>
-                    <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-heart-pulse"></i> <a href="sop-medical.html" style="color: var(--accent-gold); text-decoration: none;">СРП Медицины</a></div>
+
+                    <!-- СРП Медицины -->
+                    <li class="rule-item" style="border-left-color: #2ecc71;">
+                        <div class="rule-title">
+                            <i class="fas fa-heart-pulse" style="color: #2ecc71;"></i>
+                            <a href="sop-medical.html" style="color: #2ecc71; text-decoration: none;">СРП Медицины</a>
+                            <span class="dept-tag medical">медицина</span>
+                            <span class="dept-tag">здравоохранение</span>
+                        </div>
                         <div class="rule-desc">Обязанности Главного Врача, Заведующего, Врача, Химика, Парамедика, Психолога и Интерна. Процедуры обращения с телами, триаж, клонирование и карантин.</div>
                     </li>
-                    <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-truck"></i> <a href="sop-cargo.html" style="color: var(--accent-gold); text-decoration: none;">СРП Снабжения</a></div>
+
+                    <!-- СРП Снабжения -->
+                    <li class="rule-item" style="border-left-color: #e67e22;">
+                        <div class="rule-title">
+                            <i class="fas fa-truck" style="color: #e67e22;"></i>
+                            <a href="sop-cargo.html" style="color: #e67e22; text-decoration: none;">СРП Снабжения</a>
+                            <span class="dept-tag cargo">снабжение</span>
+                            <span class="dept-tag">логистика</span>
+                        </div>
                         <div class="rule-desc">Обязанности Квартирмейстера, Грузчика и Утилизатора. Процедуры заказа и доставки грузов, обработка специфических заказов, работа с артефактами и шаттлами.</div>
                     </li>
-                    <li class="rule-item" style="border-left-color: var(--accent-gold);">
-                        <div class="rule-title"><i class="fas fa-bell-concierge"></i> <a href="sop-service.html" style="color: var(--accent-gold); text-decoration: none;">СРП Сервисного обслуживания</a></div>
+
+                    <!-- СРП Сервисного обслуживания -->
+                    <li class="rule-item" style="border-left-color: #1abc9c;">
+                        <div class="rule-title">
+                            <i class="fas fa-bell-concierge" style="color: #1abc9c;"></i>
+                            <a href="sop-service.html" style="color: #1abc9c; text-decoration: none;">СРП Сервисного обслуживания</a>
+                            <span class="dept-tag service">сервис</span>
+                            <span class="dept-tag">обслуживание</span>
+                        </div>
                         <div class="rule-desc">Обязанности Главы Персонала, Бармена, Повара, Ботаника, Уборщика, Сервисного работника, Библиотекаря, Музыканта, Клоуна, Мима, Священника, Репортёра, Боксёра и Зоотехника. Процедура ведения чёрных списков и особые правила для развлекательных профессий.</div>
                     </li>
                 </ul>
+
+                <!-- Легенда цветов отделов -->
+                <div class="color-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: var(--accent-gold); box-shadow: 0 0 5px var(--accent-gold);"></div>
+                        <span class="legend-text">Командование</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #c0392b; box-shadow: 0 0 5px #c0392b;"></div>
+                        <span class="legend-text">Служба безопасности</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3498db; box-shadow: 0 0 5px #3498db;"></div>
+                        <span class="legend-text">Юриспруденция</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9b59b6; box-shadow: 0 0 5px #9b59b6;"></div>
+                        <span class="legend-text">Наука</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f1c40f; box-shadow: 0 0 5px #f1c40f;"></div>
+                        <span class="legend-text">Инженерия</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2ecc71; box-shadow: 0 0 5px #2ecc71;"></div>
+                        <span class="legend-text">Медицина</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e67e22; box-shadow: 0 0 5px #e67e22;"></div>
+                        <span class="legend-text">Снабжение</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #1abc9c; box-shadow: 0 0 5px #1abc9c;"></div>
+                        <span class="legend-text">Сервис</span>
+                    </div>
+                </div>
+
+                <!-- Информационный блок о применении СРП -->
+                <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1.5rem; margin-top: 2rem; border-left: 4px solid var(--accent-gold);">
+                    <h3 style="color: var(--accent-gold); margin-top: 0;"><i class="fas fa-info-circle"></i> О применении СРП</h3>
+                    <p style="margin-bottom: 1rem;">Стандартные Рабочие Процедуры являются обязательными для исполнения всеми сотрудниками соответствующих отделов. Нарушение СРП может привести к дисциплинарным взысканиям, вплоть до увольнения или уголовной ответственности согласно <a href="corporate-law.html">Корпоративному Закону</a>.</p>
+                    <p style="margin-bottom: 0;">В случае конфликта между различными инструкциями, приоритет имеют:</p>
+                    <ol style="margin-top: 0.5rem; margin-bottom: 0;">
+                        <li>Прямые приказы вышестоящего командования</li>
+                        <li>Корпоративный Закон</li>
+                        <li>СРП соответствующего отдела</li>
+                        <li>Общие инструкции по технике безопасности</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </main>
 
     <footer>
         <div class="container">
-             
+            <p>© 2026 VanGuard SS14. Все права защищены.</p>
         </div>
     </footer>
 
