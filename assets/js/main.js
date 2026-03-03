@@ -16,6 +16,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ensureAmbientLayers();
 
+    const setupTicker = () => {
+        const ticker = document.querySelector(".ops-ticker");
+        const tickerTrack = ticker ? ticker.querySelector(".ticker-track") : null;
+        if (!ticker || !tickerTrack || tickerTrack.dataset.enhanced === "true") return;
+
+        const templateItems = Array.from(tickerTrack.children).map((item) => item.cloneNode(true));
+        const templateCount = templateItems.length;
+        if (templateCount === 0) return;
+
+        const appendCycle = () => {
+            const fragment = document.createDocumentFragment();
+            templateItems.forEach((item) => fragment.appendChild(item.cloneNode(true)));
+            tickerTrack.appendChild(fragment);
+        };
+
+        const recalcTicker = () => {
+            tickerTrack.textContent = "";
+
+            appendCycle();
+            appendCycle();
+
+            const style = window.getComputedStyle(tickerTrack);
+            const gap = Number.parseFloat(style.columnGap || style.gap || "0") || 0;
+
+            const firstCycleItems = Array.from(tickerTrack.children).slice(0, templateCount);
+            const firstCycleWidth = firstCycleItems.reduce((sum, item) => sum + item.getBoundingClientRect().width, 0) + gap * (templateCount - 1);
+            const loopDistance = Math.round(firstCycleWidth + gap);
+            if (!Number.isFinite(loopDistance) || loopDistance <= 0) return;
+
+            const minTrackWidth = loopDistance + ticker.clientWidth + 2;
+            while (tickerTrack.scrollWidth < minTrackWidth) {
+                appendCycle();
+            }
+
+            tickerTrack.style.setProperty("--ticker-loop-distance", `${loopDistance}px`);
+
+            const pixelsPerSecond = 110;
+            const duration = Math.max(16, Math.round(loopDistance / pixelsPerSecond));
+            tickerTrack.style.setProperty("--ticker-duration", `${duration}s`);
+        };
+
+        tickerTrack.dataset.enhanced = "true";
+
+        let resizeTimer = 0;
+        window.addEventListener("resize", () => {
+            window.clearTimeout(resizeTimer);
+            resizeTimer = window.setTimeout(recalcTicker, 120);
+        });
+
+        recalcTicker();
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(recalcTicker).catch(() => {});
+        }
+    };
+
+    setupTicker();
+
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll("nav a");
 
