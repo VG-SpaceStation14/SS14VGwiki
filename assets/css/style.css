@@ -21,6 +21,17 @@
     box-sizing: border-box;
 }
 
+/* Force a single visible vertical scrollbar (body), hide root duplicate */
+html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-dark);
@@ -29,10 +40,23 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    opacity: 0;
+    opacity: 1;
     animation: fadeIn 0.5s ease forwards;
     position: relative;
     overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+body::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 /* Космический фон с звездами */
@@ -43,7 +67,10 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    background:
+        radial-gradient(120% 95% at 50% 120%, #0d1928 0%, #08121e 42%, #050b14 75%, #02050a 100%),
+        radial-gradient(70% 50% at 18% 12%, rgba(132, 164, 202, 0.09), transparent 70%),
+        radial-gradient(68% 52% at 82% 18%, rgba(109, 141, 178, 0.08), transparent 72%);
     z-index: -2;
 }
 
@@ -83,19 +110,19 @@ body::after {
         radial-gradient(3px 3px at 490px 500px, #fff, rgba(0,0,0,0));
     background-repeat: repeat;
     background-size: 500px 500px;
-    opacity: 0.5;
+    opacity: 0.62;
     z-index: -1;
     pointer-events: none;
-    animation: starsMove 200s linear infinite;
+    animation: starsMove 240s linear infinite;
 }
 
 /* Движение звезд для эффекта параллакса */
 @keyframes starsMove {
     from {
-        transform: translateY(0) translateX(0);
+        transform: translate3d(0, 0, 0);
     }
     to {
-        transform: translateY(-500px) translateX(100px);
+        transform: translate3d(-120px, -180px, 0);
     }
 }
 
@@ -287,7 +314,7 @@ nav ul {
 }
 
 nav li {
-    opacity: 0;
+    opacity: 1;
     animation: navItemFadeIn 0.5s ease forwards;
 }
 
@@ -1238,13 +1265,27 @@ main::before {
     padding: 0.3rem 0;
     border-bottom: 1px solid rgba(255,255,255,0.05);
     animation: fadeIn 0.3s ease;
+    display: flow-root;
+    line-height: 1.45;
 }
 
 .infobox-label {
     font-weight: 600;
     color: var(--text-secondary);
-    display: inline-block;
-    width: 100px;
+    float: left;
+    width: 120px;
+    margin-right: 12px;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+@media (max-width: 420px) {
+    .infobox-label {
+        float: none;
+        display: block;
+        width: auto;
+        margin: 0 0 4px;
+    }
 }
 
 /* Футер */
@@ -1340,6 +1381,586 @@ button:hover, .button:hover {
     .corp-tag,
     .tech-tag,
     .game-tag {
+        animation: none;
+    }
+}
+
+/* ========================================================================== */
+/* 2026 HOME REDESIGN (Navigation + Cards + Motion) */
+/* ========================================================================== */
+
+:root {
+    --bg-dark: #050a14;
+    --surface-dark: #111c2b;
+    --accent-orange: #ff8c42;
+    --accent-gold: #ffd06a;
+    --text-secondary: #a6bdd3;
+    --border-dim: rgba(145, 193, 234, 0.2);
+}
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+body {
+    background:
+        linear-gradient(180deg, #040a13 0%, #07121f 44%, #0a1624 100%);
+}
+
+.wiki-ambient {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.wiki-ambient-a {
+    inset: -12%;
+    background:
+        radial-gradient(circle at 24% 76%, rgba(142, 176, 214, 0.14), transparent 34%),
+        radial-gradient(circle at 76% 28%, rgba(116, 150, 188, 0.12), transparent 32%),
+        radial-gradient(circle at 54% 52%, rgba(88, 120, 160, 0.1), transparent 44%);
+    filter: blur(22px);
+    opacity: 0.58;
+    animation: homeAmbientMove 140s linear infinite alternate;
+}
+
+.wiki-ambient-b {
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 18px 28px, rgba(255, 255, 255, 0.5), transparent 70%),
+        radial-gradient(1.2px 1.2px at 88px 62px, rgba(223, 236, 255, 0.48), transparent 70%),
+        radial-gradient(1px 1px at 142px 114px, rgba(255, 255, 255, 0.4), transparent 70%),
+        radial-gradient(1.4px 1.4px at 214px 156px, rgba(210, 229, 252, 0.52), transparent 70%),
+        radial-gradient(1px 1px at 296px 208px, rgba(255, 255, 255, 0.42), transparent 70%);
+    background-size: 340px 340px;
+    background-repeat: repeat;
+    opacity: 0.34;
+    animation: spaceTwinkle 8s ease-in-out infinite alternate, spaceDriftNear 170s linear infinite;
+}
+
+.wiki-ambient-c {
+    inset: 0;
+    background:
+        radial-gradient(circle at 14% 22%, rgba(174, 203, 235, 0.16), transparent 18%),
+        radial-gradient(circle at 84% 68%, rgba(180, 209, 236, 0.13), transparent 15%),
+        radial-gradient(circle at 58% 34%, rgba(205, 225, 248, 0.12), transparent 16%);
+    filter: blur(10px);
+    opacity: 0.24;
+    animation: homeAmbientRotate 180s linear infinite;
+}
+
+@keyframes homeAmbientMove {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-6%, -4%, 0); }
+}
+
+@keyframes homeAmbientRotate {
+    from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.2; }
+    50% { opacity: 0.3; }
+    to { transform: translate3d(5%, -6%, 0) scale(1.08); opacity: 0.22; }
+}
+
+@keyframes spaceTwinkle {
+    from { opacity: 0.24; }
+    to { opacity: 0.4; }
+}
+
+@keyframes spaceDriftNear {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(95px, -130px, 0); }
+}
+
+.home-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-dim);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(12, 24, 36, 0.85), rgba(10, 19, 30, 0.68));
+    color: var(--text-secondary);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+}
+
+.home-breadcrumbs a {
+    color: #cde6fb;
+    text-decoration: none;
+}
+
+.home-breadcrumbs a:hover {
+    color: #ffffff;
+}
+
+.home-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.home-main {
+    min-width: 0;
+}
+
+.home-header {
+    margin-bottom: 1rem;
+}
+
+.home-hero,
+.about-panel {
+    border: 1px solid rgba(145, 193, 234, 0.22);
+    background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+        radial-gradient(circle at 84% 12%, rgba(102, 218, 255, 0.14), transparent 48%);
+}
+
+.home-hero .welcome-title {
+    font-family: "Sora", "Inter", sans-serif;
+    font-size: clamp(1.6rem, 2.7vw, 2.4rem);
+    letter-spacing: 0.02em;
+}
+
+.article-showcase {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 1.2rem;
+}
+
+.showcase-card {
+    border-radius: 14px;
+    border: 1px solid rgba(145, 193, 234, 0.24);
+    padding: 14px;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+    box-shadow: 0 14px 30px rgba(3, 13, 24, 0.35);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.showcase-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 208, 106, 0.5);
+    box-shadow: 0 20px 38px rgba(3, 13, 24, 0.45);
+}
+
+.showcase-card .card-kicker {
+    margin: 0;
+    color: #9cb8d1;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+
+.showcase-card h3 {
+    margin: 6px 0 8px;
+    font-family: "Sora", "Inter", sans-serif;
+    font-size: 1.05rem;
+    color: #f4fbff;
+}
+
+.showcase-card p {
+    margin: 0;
+    color: #c5d9ea;
+    font-size: 0.92rem;
+}
+
+.showcase-card.hot { border-left: 4px solid #ff9b61; }
+.showcase-card.info { border-left: 4px solid #6ad8ff; }
+.showcase-card.neutral { border-left: 4px solid #ffd06a; }
+
+.section-grid {
+    margin-top: 0.2rem;
+}
+
+.section-grid .card {
+    border-radius: 14px;
+    border: 1px solid rgba(145, 193, 234, 0.18);
+    border-left-width: 4px;
+    background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    box-shadow: 0 12px 26px rgba(4, 14, 24, 0.34);
+}
+
+.section-grid .card:hover {
+    border-color: rgba(255, 208, 106, 0.5);
+    background:
+        linear-gradient(170deg, rgba(255, 140, 66, 0.14), rgba(255, 255, 255, 0.03));
+}
+
+.toc-rail {
+    position: sticky;
+    top: 86px;
+}
+
+.toc-sticky {
+    border: 1px solid rgba(145, 193, 234, 0.22);
+    border-radius: 14px;
+    padding: 14px 12px;
+    background:
+        linear-gradient(165deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+        radial-gradient(circle at 82% 8%, rgba(102, 218, 255, 0.12), transparent 50%);
+}
+
+.toc-title {
+    margin: 0 0 10px;
+    color: #9db8d0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.toc-link {
+    display: block;
+    padding: 8px 9px;
+    border-radius: 10px;
+    color: #d0e5f7;
+    text-decoration: none;
+    font-size: 13px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.toc-link:hover {
+    border-color: rgba(106, 216, 255, 0.38);
+    background: rgba(106, 216, 255, 0.08);
+}
+
+.toc-link.active {
+    border-color: rgba(106, 216, 255, 0.54);
+    background:
+        linear-gradient(90deg, rgba(106, 216, 255, 0.2), rgba(106, 216, 255, 0.03));
+    color: #f2fbff;
+}
+
+.toc-progress {
+    margin-top: 12px;
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.toc-progress span {
+    display: block;
+    width: 66%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ffb068, #68d8ff);
+    animation: tocPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes tocPulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+}
+
+[data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+[data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 1100px) {
+    .home-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .toc-rail {
+        position: static;
+    }
+}
+
+@media (max-width: 900px) {
+    .article-showcase {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .home-breadcrumbs {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    .home-breadcrumbs::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .home-breadcrumbs::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(106, 216, 255, 0.4);
+    }
+}
+
+/* ========================================================================== */
+/* 2026 HOME POWER-UP (Command Deck + Ticker + Quick Dock) */
+/* ========================================================================== */
+
+.home-command-deck {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+    gap: 14px;
+    margin: 0 0 1rem;
+    padding: 16px;
+    border: 1px solid rgba(122, 205, 250, 0.22);
+    border-radius: 16px;
+    background:
+        linear-gradient(145deg, rgba(10, 23, 38, 0.86), rgba(8, 18, 31, 0.78)),
+        radial-gradient(circle at 15% 15%, rgba(255, 173, 112, 0.16), transparent 45%),
+        radial-gradient(circle at 88% 10%, rgba(106, 216, 255, 0.16), transparent 40%);
+    box-shadow: 0 18px 38px rgba(2, 12, 22, 0.46);
+    overflow: hidden;
+}
+
+.home-command-deck::before {
+    content: "";
+    position: absolute;
+    inset: -40% auto auto -30%;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(255, 176, 104, 0.2), transparent 70%);
+    pointer-events: none;
+}
+
+.deck-main {
+    position: relative;
+    z-index: 1;
+}
+
+.deck-kicker {
+    margin: 0 0 8px;
+    color: #7fdfff;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.deck-main h2 {
+    margin: 0;
+    font-family: "Sora", "Inter", sans-serif;
+    font-size: clamp(1.28rem, 2.4vw, 1.95rem);
+    line-height: 1.2;
+    color: #f5fcff;
+}
+
+.deck-description {
+    margin: 12px 0 14px;
+    color: #b9cee0;
+    max-width: 58ch;
+}
+
+.deck-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.deck-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 13px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.86rem;
+    letter-spacing: 0.01em;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.deck-btn.primary {
+    color: #1a1003;
+    background: linear-gradient(135deg, #ffd06a, #ff9f63);
+    box-shadow: 0 10px 20px rgba(255, 168, 103, 0.3);
+}
+
+.deck-btn.secondary {
+    color: #d8ecff;
+    border-color: rgba(127, 223, 255, 0.26);
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+}
+
+.deck-btn:hover {
+    transform: translateY(-2px);
+}
+
+.deck-btn.primary:hover {
+    box-shadow: 0 14px 28px rgba(255, 168, 103, 0.4);
+}
+
+.deck-btn.secondary:hover {
+    border-color: rgba(127, 223, 255, 0.55);
+    background: linear-gradient(155deg, rgba(106, 216, 255, 0.17), rgba(255, 255, 255, 0.02));
+}
+
+.deck-metrics {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.metric-card {
+    position: relative;
+    border: 1px solid rgba(142, 198, 244, 0.24);
+    border-radius: 12px;
+    padding: 12px 13px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 208, 106, 0.45);
+}
+
+.metric-label {
+    margin: 0;
+    color: #9fc0da;
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    margin: 5px 0 2px;
+    font-family: "Sora", "Inter", sans-serif;
+    font-size: clamp(1.2rem, 2.2vw, 1.75rem);
+    color: #f5fcff;
+    line-height: 1.1;
+}
+
+.metric-footnote {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #bed3e4;
+}
+
+.ops-ticker {
+    border: 1px solid rgba(142, 198, 244, 0.22);
+    border-radius: 12px;
+    margin: 0 0 1rem;
+    padding: 10px 0;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(11, 23, 34, 0.8), rgba(8, 17, 27, 0.6));
+}
+
+.ticker-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    padding-left: 16px;
+    white-space: nowrap;
+    animation: tickerMove 24s linear infinite;
+}
+
+.ticker-track span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #d4e6f8;
+    font-size: 0.84rem;
+}
+
+.ticker-track i {
+    color: #7fdfff;
+}
+
+@keyframes tickerMove {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.quick-dock {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 120;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid rgba(145, 193, 234, 0.28);
+    border-radius: 999px;
+    background: rgba(7, 17, 27, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 12px 26px rgba(2, 11, 22, 0.45);
+}
+
+.dock-link {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #d7ecff;
+    text-decoration: none;
+    border: 1px solid rgba(145, 193, 234, 0.26);
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.03));
+    transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.dock-link:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 208, 106, 0.6);
+    color: #fff8e5;
+}
+
+@media (max-width: 1100px) {
+    .home-command-deck {
+        grid-template-columns: 1fr;
+    }
+
+    .deck-metrics {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .deck-actions {
+        gap: 8px;
+    }
+
+    .deck-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .deck-metrics {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .quick-dock {
+        right: 10px;
+        bottom: 10px;
+    }
+
+    .dock-link {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ticker-track {
         animation: none;
     }
 }
