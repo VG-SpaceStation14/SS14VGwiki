@@ -1,11 +1,14 @@
 import { useEffect, useRef } from "react";
 import { QuickDock } from "@/components/QuickDock";
 import { RichContent } from "@/components/RichContent";
+import { useRevealAnimations } from "@/lib/useRevealAnimations";
 import { usePageContent } from "@/lib/usePageContent";
 
 export function HomePage() {
   const { page, content, error, isLoading } = usePageContent("/");
   const containerRef = useRef(null);
+
+  useRevealAnimations(containerRef, [content]);
 
   useEffect(() => {
     if (!content || !containerRef.current) {
@@ -48,8 +51,8 @@ export function HomePage() {
   }
 
   return (
-    <>
-      <section ref={containerRef} className="relative min-w-0">
+    <div ref={containerRef} className="relative min-w-0">
+      <section className="relative min-w-0">
         {error ? (
           <div className="mb-5 rounded-3xl border border-rose-400/20 bg-rose-400/10 px-5 py-4 text-sm text-rose-200">
             Главная страница не загрузилась. Проверь генерацию `npm run sync:content`.
@@ -66,6 +69,6 @@ export function HomePage() {
         )}
       </section>
       <QuickDock items={content?.quickDock ?? []} />
-    </>
+    </div>
   );
 }

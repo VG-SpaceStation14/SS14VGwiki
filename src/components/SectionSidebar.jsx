@@ -15,7 +15,10 @@ export function SectionSidebar({ page }) {
   }
 
   return (
-    <aside className="sticky top-28 hidden h-fit min-w-0 self-start rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5 shadow-glow xl:block">
+    <aside
+      className="section-sidebar sticky top-28 hidden h-fit min-w-0 self-start rounded-[1.75rem] border border-white/10 p-5 shadow-glow xl:block"
+      data-reveal
+    >
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-xs uppercase tracking-[0.28em] text-gold/80">В разделе</p>
         <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-steel">

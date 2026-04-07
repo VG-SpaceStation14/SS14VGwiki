@@ -27,7 +27,7 @@ export function QuickDock({ items = [] }) {
   }
 
   return (
-    <nav className="quick-dock" aria-label="Быстрые переходы">
+    <nav className="quick-dock" aria-label="Быстрые переходы" data-reveal>
       {items.map((item) => (
         <DockItem item={item} key={`${item.label}-${item.href}`} />
       ))}
