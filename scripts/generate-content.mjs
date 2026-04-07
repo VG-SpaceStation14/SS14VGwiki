@@ -166,6 +166,229 @@ function createContentFileName(relativeFilePath) {
     .concat(".json");
 }
 
+function normalizeOutputHtml(html) {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/\sstyle="text-decoration:\s*none"/g, "")
+    .replace(/\sstyle="transition:\s*all\s*0\.3s\s*ease"/g, "")
+    .replace(/\n\s+\n/g, "\n")
+    .trim();
+}
+
+function addClasses($, element, classes) {
+  const currentClasses = new Set(
+    ($(element).attr("class") || "")
+      .split(/\s+/)
+      .map((value) => value.trim())
+      .filter(Boolean),
+  );
+
+  classes.filter(Boolean).forEach((className) => currentClasses.add(className));
+
+  if (currentClasses.size > 0) {
+    $(element).attr("class", Array.from(currentClasses).join(" "));
+  }
+}
+
+function sanitizeStyle(style) {
+  const declarations = style
+    .split(";")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  const visualProperties = new Set([
+    "background",
+    "background-color",
+    "background-image",
+    "border",
+    "border-top",
+    "border-right",
+    "border-bottom",
+    "border-left",
+    "border-color",
+    "border-radius",
+    "box-shadow",
+    "color",
+    "padding",
+    "padding-top",
+    "padding-right",
+    "padding-bottom",
+    "padding-left",
+    "margin",
+    "margin-top",
+    "margin-right",
+    "margin-bottom",
+    "margin-left",
+    "text-shadow",
+    "filter",
+    "opacity",
+    "display",
+    "grid-template-columns",
+    "gap",
+    "align-items",
+    "justify-content",
+    "flex-wrap",
+    "text-align",
+    "font-size",
+    "list-style",
+    "list-style-type",
+    "text-decoration",
+    "transition",
+    "float",
+  ]);
+
+  const cleanedDeclarations = declarations.filter((declaration) => {
+    const [property] = declaration.split(":");
+    if (!property) {
+      return false;
+    }
+
+    return !visualProperties.has(property.trim().toLowerCase());
+  });
+
+  return cleanedDeclarations.join("; ");
+}
+
+function decorateStyledElements($, contentRoot) {
+  contentRoot.find("[style]").each((_, element) => {
+    const style = ($(element).attr("style") || "").toLowerCase();
+    const tag = element.tagName?.toLowerCase() || "";
+    const classes = [];
+    const className = $(element).attr("class") || "";
+    const hasStructuredClass =
+      className.includes("rule-group") ||
+      className.includes("infobox") ||
+      className.includes("home-") ||
+      className.includes("card") ||
+      className.includes("metric") ||
+      className.includes("showcase");
+
+    const isPanelLike =
+      /(background|background-color):/.test(style) ||
+      /border-left:\s*4px/.test(style) ||
+      /padding:\s*/.test(style) ||
+      /border-radius:\s*/.test(style);
+
+    if (tag === "div" && isPanelLike && !hasStructuredClass) {
+      classes.push("legacy-panel");
+    }
+
+    if (/border-left:\s*4px solid var\(--accent-orange\)/.test(style)) {
+      classes.push("legacy-panel-ember");
+    }
+
+    if (/border-left:\s*4px solid var\(--accent-gold\)/.test(style)) {
+      classes.push("legacy-panel-gold");
+    }
+
+    if (/background:\s*rgba\(0,0,0,0\.2\)|background-color:\s*var\(--surface-dark\)/.test(style)) {
+      classes.push("legacy-panel-muted");
+    }
+
+    if (/text-align:\s*center/.test(style)) {
+      classes.push("legacy-center");
+    }
+
+    if (/display:\s*grid/.test(style)) {
+      classes.push("legacy-grid");
+    }
+
+    if (/grid-template-columns:\s*1fr 1fr/.test(style)) {
+      classes.push("legacy-grid-2");
+    }
+
+    if (/display:\s*flex/.test(style)) {
+      classes.push("legacy-flex");
+    }
+
+    if (/align-items:\s*center/.test(style)) {
+      classes.push("legacy-items-center");
+    }
+
+    if (/justify-content:\s*center/.test(style)) {
+      classes.push("legacy-justify-center");
+    }
+
+    if (/flex-wrap:\s*wrap/.test(style)) {
+      classes.push("legacy-wrap");
+    }
+
+    if (/gap:\s*1\.5rem/.test(style)) {
+      classes.push("legacy-gap-lg");
+    } else if (/gap:\s*(0\.5rem|0\.8rem|1rem)/.test(style)) {
+      classes.push("legacy-gap");
+    }
+
+    if (/font-size:\s*1\.1rem/.test(style)) {
+      classes.push("legacy-lead");
+    }
+
+    if (/font-size:\s*0\.9rem/.test(style)) {
+      classes.push("legacy-small");
+    }
+
+    if (/font-size:\s*0\.7rem/.test(style)) {
+      classes.push("legacy-icon-xs");
+    }
+
+    if (/color:\s*(#ff8a8a|#f87171)/.test(style)) {
+      classes.push("legacy-tone-danger");
+    }
+
+    if (/color:\s*(#4ade80|#2ecc71)/.test(style)) {
+      classes.push("legacy-tone-success");
+    }
+
+    if (/color:\s*(#3498db|var\(--accent-blue\))/.test(style)) {
+      classes.push("legacy-tone-sky");
+    }
+
+    if (/color:\s*(#9b59b6)/.test(style)) {
+      classes.push("legacy-tone-violet");
+    }
+
+    if (/color:\s*(var\(--accent-gold\)|#f1c40f|#feb908)/.test(style)) {
+      classes.push("legacy-tone-gold");
+    }
+
+    if (/color:\s*(var\(--accent-orange\)|#de7219)/.test(style)) {
+      classes.push("legacy-tone-ember");
+    }
+
+    if (tag === "ul" || tag === "ol") {
+      if (/list-style-type:\s*none/.test(style) || /padding-left:\s*0/.test(style)) {
+        classes.push("legacy-list-plain");
+      }
+
+      if (/list-style-type:\s*disc/.test(style)) {
+        classes.push("legacy-list-disc");
+      }
+
+      if (/list-style-type:\s*decimal/.test(style) || /list-style:\s*decimal/.test(style)) {
+        classes.push("legacy-list-decimal");
+      }
+
+      if (/margin-left:\s*2rem/.test(style) || /padding-left:\s*2rem/.test(style)) {
+        classes.push("legacy-indent");
+      }
+    }
+
+    addClasses($, element, classes);
+
+    if (className.includes("infobox")) {
+      $(element).removeAttr("style");
+      return;
+    }
+
+    const cleanedStyle = sanitizeStyle(style);
+    if (cleanedStyle) {
+      $(element).attr("style", cleanedStyle);
+    } else {
+      $(element).removeAttr("style");
+    }
+  });
+}
+
 function sortPages(left, right) {
   const getWeight = (page) => {
     if (page.path === "/") {
@@ -243,6 +466,8 @@ async function main() {
       $(element).attr("src", rewriteSrc(relativeFilePath, $(element).attr("src")));
     });
 
+    decorateStyledElements($, contentRoot);
+
     const route = toRoute(relativeFilePath);
     const pageHeader = $(".page-header").first();
     const rawTitle = textContent($("title").first().text());
@@ -250,7 +475,7 @@ async function main() {
     const section = routeType === "article" || routeType === "section" ? toPosix(relativeFilePath).split("/")[0] : null;
     const contentFile = createContentFileName(relativeFilePath);
     const contentPayload = {
-      contentHtml: contentRoot.html()?.trim() || "",
+      contentHtml: normalizeOutputHtml(contentRoot.html() || ""),
       quickDock: routeType === "home" ? extractQuickDock($) : [],
     };
 

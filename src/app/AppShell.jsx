@@ -32,12 +32,14 @@ function ScrollManager() {
 
 export function AppShell({ children }) {
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-hero-grid bg-[size:72px_72px] opacity-[0.05]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[42rem] bg-[radial-gradient(circle_at_top,rgba(255,138,61,0.16),transparent_50%),radial-gradient(circle_at_20%_20%,rgba(83,143,255,0.12),transparent_35%)]" />
+    <div className="relative min-h-screen overflow-x-hidden">
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-hero-grid bg-[size:84px_84px] opacity-[0.05]" />
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_20%,rgba(83,143,255,0.18),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(255,138,61,0.12),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(102,126,234,0.12),transparent_32%)]" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-[28vw] bg-[radial-gradient(circle_at_left,rgba(18,58,122,0.22),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-[24vw] bg-[radial-gradient(circle_at_right,rgba(255,138,61,0.1),transparent_70%)]" />
       <ScrollManager />
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+      <main className="mx-auto flex min-w-0 w-full max-w-[1520px] flex-1 flex-col px-4 pb-20 pt-8 sm:px-6 lg:px-8">
         {children}
       </main>
       <SiteFooter />
